@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using System;
 
-public class Grid : MonoBehaviour
+public class GridHandler : MonoBehaviour
 {
     // every tile
     int chunkSize = 32;
@@ -66,10 +66,15 @@ public class Grid : MonoBehaviour
 
     int Coords2Index(float x, float y)
     {
-        // This looks useless right now but it will be useful if we add a chunk system
-        // Currently doesn't work with negative numbers
-        return ( (int)Math.Floor(y / (chunkSize)) + ((int)x % (chunkSize)) );
+        int chunkX = (int)Math.Floor(x / chunkSize);
+        int chunkY = (int)Math.Floor(y / chunkSize);
+        int indexInChunk = (Math.Abs((int)x) % chunkSize) + (Math.Abs((int)y) % chunkSize) * chunkSize;
+
+        return chunkSize * chunkSize * chunkX + chunkSize * chunkY + indexInChunk;
     }
+
+
+
 
     void UpdateTile(float x, float y, int tileValue)
     {
