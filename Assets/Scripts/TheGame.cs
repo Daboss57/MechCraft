@@ -4,12 +4,15 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using System;
 
-public class GridHandler : MonoBehaviour
+public class TheGame : MonoBehaviour
 {
     // every tile
     int chunkSize = 32;
 
-    public List<int> tiles = new List<int>();
+    // list of all tiles in a chunk
+    public List<int> chunkTiles = new List<int>();
+
+    public List<int> chunkData = new List<int>();
 
 
     [SerializeField]
@@ -18,14 +21,22 @@ public class GridHandler : MonoBehaviour
     public Tilemap tilemap = null;
     public List<TileBase> tilebases = new List<TileBase>();
 
+
+    public class Conveyor
+    {
+        public int[] connections = new int[5];
+        public int power = 0;
+        public Dictionary<int, int> storage = new Dictionary<int, int>();
+    }
+
     // Start is called start because it starts
     void Start()
     {
         tilemap = world.GetComponent<Tilemap>();
 
-        CreateChunk(tiles);
+        CreateChunk(chunkTiles);
         print(tilemap);
-        print(tiles[3]);
+        print(chunkTiles[3]);
     }
 
     void CreateChunk(List<int> list) {
@@ -48,7 +59,7 @@ public class GridHandler : MonoBehaviour
                     mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                     Debug.Log(mousePos.x);
                     Debug.Log(mousePos.y);
-                    UpdateTile(mousePos.x, mousePos.y, 2);
+                    UpdateTile(mousePos.x, mousePos.y, 1);
                 }
             }
         else if (Input.GetMouseButtonDown(1))
@@ -66,19 +77,14 @@ public class GridHandler : MonoBehaviour
 
     int Coords2Index(float x, float y)
     {
-        int chunkX = (int)Math.Floor(x / chunkSize);
-        int chunkY = (int)Math.Floor(y / chunkSize);
-        int indexInChunk = (Math.Abs((int)x) % chunkSize) + (Math.Abs((int)y) % chunkSize) * chunkSize;
-
-        return chunkSize * chunkSize * chunkX + chunkSize * chunkY + indexInChunk;
+        // This looks useless right now but it will be useful if we add a chunk system
+        // Currently doesn't work with negative numbers
+        return ( (int)Math.Floor(y / (chunkSize)) + ((int)x % (chunkSize)) );
     }
-
-
-
 
     void UpdateTile(float x, float y, int tileValue)
     {
-        tiles[Coords2Index(x, y)] = tileValue;
+        chunkTiles[Coords2Index(x, y)] = tileValue;
         tilemap.SetTile(new Vector3Int((int)Math.Floor(x), (int)Math.Floor(y), 0), tilebases[tileValue]);
         print("updated");
     }
