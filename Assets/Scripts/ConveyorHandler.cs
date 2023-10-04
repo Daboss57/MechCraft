@@ -13,9 +13,20 @@ public class ConveyorHandler : MonoBehaviour
         Debug.Log("Trigger Enter");
         if (other.CompareTag("Resource"))
         {
+            // Check if the resource is on the right side of the conveyor
+            if (other.transform.position.x > transform.position.x)
+            {
+                speed = -1.0f; // Set speed to positive for right movement
+            }
+            else
+            {
+                speed = 1.0f; // Set speed to negative for left movement
+            }
+
             other.transform.SetParent(transform, true); // Attach the object to the conveyor
         }
     }
+
 
     void OnTriggerStay2D(Collider2D other)
     {
@@ -31,9 +42,11 @@ public class ConveyorHandler : MonoBehaviour
         Debug.Log("Trigger Exit");
         if (other.CompareTag("Resource"))
         {
-            other.transform.SetParent(null, true); // Detach the object from the conveyor
+            Transform resourceTransform = other.transform;
+            resourceTransform.SetParent(null, true); // Detach the object from the conveyor
         }
     }
+
 
     void Update()
     {
