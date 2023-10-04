@@ -10,7 +10,6 @@ public class ConveyorHandler : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log("Trigger Enter");
         if (other.CompareTag("Resource"))
         {
             // Check if the resource is on the right side of the conveyor
@@ -30,7 +29,6 @@ public class ConveyorHandler : MonoBehaviour
 
     void OnTriggerStay2D(Collider2D other)
     {
-        Debug.Log("Trigger Stay");
         if (other.CompareTag("Resource"))
         {
             other.transform.SetParent(transform); // Keeps it on
@@ -39,7 +37,6 @@ public class ConveyorHandler : MonoBehaviour
 
     void OnTriggerExit2D(Collider2D other)
     {
-        Debug.Log("Trigger Exit");
         if (other.CompareTag("Resource"))
         {
             Transform resourceTransform = other.transform;

@@ -1,20 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 public class MinerHandler : MonoBehaviour
 {
-    public float productionRate = 0.1f; // Amount of iron produced per second
+    public float productionRate = 10.0f; // Amount of iron produced per second
+    public GameObject ironPrefab;
 
-    private float timer = 0.0f;
+    private float nextProductionTime = 0.0f;
 
     void Update()
     {
-        timer += Time.deltaTime;
+        nextProductionTime += 0.0001f;
 
-        if (timer >= (1.0f / productionRate))
-        {
+        if(nextProductionTime >= productionRate) {
             ProduceIron();
-            timer = 0.0f;
+            nextProductionTime = 0.0f;
         }
     }
 
@@ -23,5 +24,11 @@ public class MinerHandler : MonoBehaviour
         // Add code here to generate iron
         // For example, you might increment a resource counter or instantiate an iron object.
         ResourceManager.Instance.AddIron(1);
+
+        Vector3 spawnPosition = transform.position + transform.right * 1.0f;
+
+        GameObject iron = Instantiate(ironPrefab, spawnPosition, Quaternion.identity);
+
+        iron.transform.SetParent(transform);
     }
 }
