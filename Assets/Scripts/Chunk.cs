@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Chunk
 {
+    public bool filled = false;
     public int[] coords;
     public int[,] chunkTiles;
     public GenericTile[,] chunkData;
@@ -12,6 +13,7 @@ public class Chunk
     {
         coords = new int[2] {x, y};
         chunkTiles = new int[chunkSize, chunkSize];
+        chunkData = new GenericTile[chunkSize, chunkSize];
     }
 
 }
