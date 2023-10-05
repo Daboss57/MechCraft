@@ -23,6 +23,7 @@ public class LevelHandler : MonoBehaviour
 
     // public Save json = new Save();
     public Save world = new Save();
+    public string worldJson = "";
     //file name of save in game appdata
     public string saveFile = "save.json";
 
@@ -36,12 +37,14 @@ public class LevelHandler : MonoBehaviour
         // json = JsonUtility.FromJson<Save>(raw.text);
 
         world = LoadWorld();
-
+        print(world.chunks[4,3].chunkTiles[1,2]);
+        print(world);
+        print(worldJson);
         //probably redundant
-        if (world.chunks != null)
-        {
-            world = CreateWorld(worldName, worldSize, chunkSize);
-        }
+        // if (world.chunks == null)
+        // {
+        //     world = CreateWorld(worldName, worldSize, chunkSize);
+        // }
 
 
 
@@ -54,18 +57,20 @@ public class LevelHandler : MonoBehaviour
 
         for (int i = 0; i < Math.Pow(worldSize, 2); i++)
         {
-            int x = (int)Math.Floor((float)i / worldSize);
+            int x = i % worldSize;
             int y = (int)Math.Floor((float)i / worldSize);
 
             Chunk chunk = new Chunk(x, y, chunkSize);
             chunks[x, y] = chunk;
+            chunk.chunkTiles[1,2] = 1;
+            // print(chunk);
+            print(chunk.chunkTiles[1,2]);
             
         }
+        print(chunks[2,1].chunkTiles[1,2]);
+
         save.name = name;
         save.chunks = chunks;
-        // yay it works
-        // print(chunkData[4]);
-        // print(chunkData[5].power);
         return save;
     }
 
@@ -80,16 +85,22 @@ public class LevelHandler : MonoBehaviour
 
             string saveRaw = File.ReadAllText(savePath);
 
+            // Save world = JsonHelper.FromJson<Save>(saveRaw);
             Save world = JsonUtility.FromJson<Save>(saveRaw);
         } else
         {
+            // Save world = JsonHelper.FromJson<Save>(saveThing.text);
             Save world = JsonUtility.FromJson<Save>(saveThing.text);
         }
 
-        if (world == null)
+        if (world.chunks == null)
         {
+            print("no chunks");
             world = CreateWorld(worldName, worldSize, chunkSize);
+            worldJson = JsonUtility.ToJson(world);
         }
+        print(world.chunks[4,3].chunkTiles[1,2]);
+        print(world);
         // print(world);
 
         return world;
@@ -99,15 +110,60 @@ public class LevelHandler : MonoBehaviour
     public void SaveWorld()
     {
         //save world to SaveFile in SavePath
-        savePath = Path.Combine(Application.persistentDataPath, saveFile);
+        // string data = JsonHelper.ToJson<Chunk>(world.chunks);
         string data = JsonUtility.ToJson(world);
-        File.WriteAllText(savePath, data);
-        print("World Saved to " + savePath);
+        if (readFromAppdata)
+        {
+            savePath = Path.Combine(Application.persistentDataPath, saveFile);
+            File.WriteAllText(savePath, data);
+            print("World Saved to " + savePath);
+        } else
+        {
+            File.WriteAllText(Path.Combine(Application.dataPath, saveThing.name), data);
+            print("World Saved to " + Path.Combine(Application.dataPath, saveThing.name + ".json"));
+            print(world);
+            print(data);
+        }
+
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        // print(world.chunks[7,3].chunkTiles[5,7]);
     }
+
+
+    // turns out that unity's json library is sort of bad
+    // this is from stack overflow because of course it is
+    public static class JsonHelper
+    {
+        public static T[] FromJson<T>(string json)
+        {
+            Wrapper<T> wrapper = JsonUtility.FromJson<Wrapper<T>>(json);
+            return wrapper.Items;
+        }
+
+        public static string ToJson<T>(T[] array)
+        {
+            Wrapper<T> wrapper = new Wrapper<T>();
+            wrapper.Items = array;
+            return JsonUtility.ToJson(wrapper);
+        }
+
+        // public static string ToJson<T>(T[] array, bool prettyPrint)
+        // {
+        //     Wrapper<T> wrapper = new Wrapper<T>();
+        //     wrapper.Items = array;
+        //     return JsonUtility.ToJson(wrapper, prettyPrint);
+        // }
+
+        [Serializable]
+        private class Wrapper<T>
+        {
+            public T[] Items;
+        }
+    }
+
 }

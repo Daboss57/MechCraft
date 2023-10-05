@@ -448,7 +448,7 @@ MonoBehaviour:
   chunkSize: 32
   worldSize: 16
   world: {fileID: 268107462}
-  levelHandler: {fileID: 0}
+  levelHandler: {fileID: 1201120046}
   tilemap: {fileID: 268107464}
   tilebases:
   - {fileID: 0}
@@ -674,7 +674,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   productionRate: 0.1
-  ironPrefab: {fileID: 0}
+  ironPrefab: {fileID: 438307221}
 --- !u!212 &770216858
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -776,6 +776,7 @@ MonoBehaviour:
   worldName: test
   saveThing: {fileID: 4900000, guid: 5fd1c457cf7420c42b9be8636feba973, type: 3}
   readFromAppdata: 0
+  worldJson: 
   saveFile: save.json
 --- !u!4 &1201120048
 Transform:

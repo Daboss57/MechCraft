@@ -13,6 +13,7 @@ public class Chunk
     {
         coords = new int[2] {x, y};
         chunkTiles = new int[chunkSize, chunkSize];
+        chunkData = new GenericTile[chunkSize, chunkSize];
     }
 
 }
