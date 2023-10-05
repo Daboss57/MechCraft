@@ -10,13 +10,12 @@ public class GridHandler : MonoBehaviour
     public int worldSize = 16;
 
     // list of all tiles in a chunk
-    public List<int> chunkTiles = new List<int>();
     public Chunk[,] worldData;
-    public List<GenericTile> chunkData = new List<GenericTile>();
 
 
     [SerializeField]
     public GameObject world = null;
+    public GameObject levelHandler = null;
 
     public Tilemap tilemap = null;
     public List<TileBase> tilebases = new List<TileBase>();
@@ -57,27 +56,31 @@ public class GridHandler : MonoBehaviour
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
+        {
+            Vector3 mousePos = Input.mousePosition;
             {
-                Vector3 mousePos = Input.mousePosition;
-                {
-                    
-                    mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                    Debug.Log(mousePos.x);
-                    Debug.Log(mousePos.y);
-                    UpdateTile((int)Math.Floor(mousePos.x), (int)Math.Floor(mousePos.y), 1);
-                }
+                
+                mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                Debug.Log(mousePos.x);
+                Debug.Log(mousePos.y);
+                UpdateTile((int)Math.Floor(mousePos.x), (int)Math.Floor(mousePos.y), 1);
             }
+        }
         else if (Input.GetMouseButtonDown(1))
+        {
+            Vector3 mousePos = Input.mousePosition;
             {
-                Vector3 mousePos = Input.mousePosition;
-                {
-                    
-                    mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                    Debug.Log(mousePos.x);
-                    Debug.Log(mousePos.y);
-                    UpdateTile((int)Math.Floor(mousePos.x), (int)Math.Floor(mousePos.y), 0);
-                }
+                
+                mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                Debug.Log(mousePos.x);
+                Debug.Log(mousePos.y);
+                UpdateTile((int)Math.Floor(mousePos.x), (int)Math.Floor(mousePos.y), 0);
             }
+        }
+        else if (Input.GetKey("t"))
+        {
+            levelHandler.GetComponent<LevelHandler>().SaveWorld();
+        }
     }
 
     int Coords2Index(float x, float y)
