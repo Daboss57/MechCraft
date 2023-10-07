@@ -6,7 +6,9 @@ public class Chunk
 {
     public bool filled = false;
     public int[] coords;
+    // ids of tiles, used for tilemap display
     public int[,] chunkTiles;
+    // other tile data
     public GenericTile[,] chunkData;
 
     public Chunk(int x, int y,int chunkSize)

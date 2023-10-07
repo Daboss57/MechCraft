@@ -142,7 +142,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &264718096
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -447,9 +447,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   chunkSize: 32
   worldSize: 16
-  world: {fileID: 268107462}
-  levelHandler: {fileID: 1201120046}
-  tilemap: {fileID: 268107464}
+  tilemapObject: {fileID: 268107462}
+  levelHandlerObject: {fileID: 1201120046}
   tilebases:
   - {fileID: 0}
   - {fileID: 11400000, guid: 6385a60b878fc634e942d27a18b9058d, type: 2}
@@ -500,7 +499,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!58 &438307222
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -660,7 +659,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &770216857
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -940,7 +939,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1446503651
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1110,7 +1109,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1546979764
 MonoBehaviour:
   m_ObjectHideFlags: 0

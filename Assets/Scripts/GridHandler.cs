@@ -6,51 +6,86 @@ using System;
 
 public class GridHandler : MonoBehaviour
 {
+    // gonna move these two to a singleton later
     public int chunkSize = 32;
     public int worldSize = 16;
 
     // list of all tiles in a chunk
-    public Chunk[,] worldData;
+    public Chunk[,] worldData = null;
 
 
     [SerializeField]
-    public GameObject world = null;
-    public GameObject levelHandler = null;
+    public GameObject tilemapObject = null;
+    public GameObject levelHandlerObject = null;
+    LevelHandler levelHandler = null;
 
-    public Tilemap tilemap = null;
+    Tilemap tilemap = null;
     public List<TileBase> tilebases = new List<TileBase>();
 
 
     // Start is called start because it starts
     void Start()
     {
-        tilemap = world.GetComponent<Tilemap>();
-
-        worldData = CreateWorld();
+        tilemap = tilemapObject.GetComponent<Tilemap>();
         print(tilemap);
+        tilemap.SetTile(new Vector3Int(12, 6, 0), tilebases[1]);
+
+        levelHandler = levelHandlerObject.GetComponent<LevelHandler>();
+        print(levelHandler);
+
+        SetWorldData();
+        
         // print(chunkTiles[3]);
         // print(Math.Pow(4,3));
     }
 
-    Chunk[,] CreateWorld() {
-        Chunk[,] chunks = new Chunk[worldSize, worldSize];
-
-        for (int i = 0; i < Math.Pow(worldSize, 2); i++)
+    void SetWorldData()
+    {
+        worldData = levelHandler.world.chunks;
+        print(levelHandler);
+        print(levelHandler.world);
+        print(levelHandler.world.chunks);
+        for (int cx = 0; cx < worldSize; cx++)
         {
-            //Level loading stuff will go here
-            int x = (int)Math.Floor((float)i / worldSize);
-            int y = (int)Math.Floor((float)i / worldSize);
-
-            Chunk chunk = new Chunk(x, y, chunkSize);
-            // worldData[x, y] = chunk;
-            chunks[x, y] = chunk;
-            
+            for (int cy = 0; cy < worldSize; cy++)
+            {
+                for (int tx = 0; tx < chunkSize; tx++)
+                {
+                    for (int ty = 0; ty < chunkSize; ty++)
+                    {
+                        // print(worldData);
+                        // tilemap.SetTile(new Vector3Int(12, 6, 0), tilebases[1]);
+                        tilemap.SetTile(new Vector3Int(cx * chunkSize + tx, cy * chunkSize + ty, 0), tilebases[worldData[cx, cy].chunkTiles[tx, ty]]);
+                        // tilemap.SetTile(new Vector3Int(
+                            // cx * chunkSize + tx, cy * chunkSize + ty, 0), 
+                            // tilebases[worldData[cx, cy].chunkTiles[tx, ty]]
+                            // );
+                    }
+                }
+            }
         }
-        // yay it works
-        // print(chunkData[4]);
-        // print(chunkData[5].power);
-        return chunks;
     }
+
+    // world loading and saving is in LevelHandler
+    // Chunk[,] CreateWorld() {
+    //     Chunk[,] chunks = new Chunk[worldSize, worldSize];
+
+    //     for (int i = 0; i < Math.Pow(worldSize, 2); i++)
+    //     {
+    //         //Level loading stuff will go here
+    //         int x = (int)Math.Floor((float)i / worldSize);
+    //         int y = (int)Math.Floor((float)i / worldSize);
+
+    //         Chunk chunk = new Chunk(x, y, chunkSize);
+    //         // worldData[x, y] = chunk;
+    //         chunks[x, y] = chunk;
+            
+    //     }
+    //     // yay it works
+    //     // print(chunkData[4]);
+    //     // print(chunkData[5].power);
+    //     return chunks;
+    // }
 
     // Update is called very many times per frame
     void Update()
@@ -77,9 +112,10 @@ public class GridHandler : MonoBehaviour
                 UpdateTile((int)Math.Floor(mousePos.x), (int)Math.Floor(mousePos.y), 0);
             }
         }
-        else if (Input.GetKey("t"))
+        else if (Input.GetKeyDown("t"))
         {
-            levelHandler.GetComponent<LevelHandler>().SaveWorld();
+            levelHandler.world.chunks = worldData;
+            levelHandler.SaveWorld();
         }
     }
 
@@ -116,9 +152,11 @@ public class GridHandler : MonoBehaviour
         int[] chunkPos = GlobalPos2Chunk(x, y);
         int[] localPos = GlobalPos2LocalPos(x, y);
 
-        print(worldData[1,1]);
-        Chunk chunk = worldData[chunkPos[0], chunkPos[1]];
+        // print(worldData[1,1]);
+        // Chunk chunk = worldData[chunkPos[0], chunkPos[1]];
         // chunkTiles[localPos] = tileValue;
+        
+        worldData[chunkPos[0], chunkPos[1]].chunkTiles[localPos[0], localPos[1]] = tileValue;
 
         tilemap.SetTile(new Vector3Int(x, y, 0), tilebases[tileValue]);
         print("updated");
