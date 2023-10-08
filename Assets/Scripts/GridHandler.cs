@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using System.IO;
 using System;
 
 public class GridHandler : MonoBehaviour
@@ -33,10 +34,35 @@ public class GridHandler : MonoBehaviour
         levelHandler = levelHandlerObject.GetComponent<LevelHandler>();
         print(levelHandler);
 
+        tilebases = CreateTiles();
+
         SetWorldData();
         
         // print(chunkTiles[3]);
         // print(Math.Pow(4,3));
+    }
+    
+    List<TileBase> CreateTiles()
+    {
+        List<TileBase> tiles = new List<TileBase>();
+        string[] paths = Directory.GetFiles(Path.Combine(Application.dataPath, "Tiles"), "*.png");
+
+        tiles.Add(null);
+
+        for (int i = 0; i < paths.Length; i++)
+        {
+            Tile tile = Tile.CreateInstance<Tile>();
+            Texture2D texture = new Texture2D(1,1);
+            
+            texture.LoadImage(File.ReadAllBytes(paths[i]));
+            texture.filterMode = FilterMode.Point;
+            tile.sprite = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f), 16.0f);
+
+            tiles.Add(tile);
+            print(paths[i]);
+        }
+
+        return tiles;
     }
 
     void SetWorldData()
