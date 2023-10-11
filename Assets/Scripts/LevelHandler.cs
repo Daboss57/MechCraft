@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System;
+using Newtonsoft.Json;
 
 public class LevelHandler : MonoBehaviour
 {
@@ -30,14 +31,13 @@ public class LevelHandler : MonoBehaviour
     string savePath;
 
     
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         savePath = Path.Combine(Application.persistentDataPath, saveFile);
         // json = JsonUtility.FromJson<Save>(raw.text);
 
         world = LoadWorld();
-        print(world.chunks[4,3].chunkTiles[1,2]);
+        // print(world.chunks[4,3].chunkTiles[1,2]);
         print(world);
         print(worldJson);
         //probably redundant
@@ -62,12 +62,12 @@ public class LevelHandler : MonoBehaviour
 
             Chunk chunk = new Chunk(x, y, chunkSize);
             chunks[x, y] = chunk;
-            chunk.chunkTiles[1,2] = 1;
+            // chunk.chunkTiles[1,2] = 1;
             // print(chunk);
-            print(chunk.chunkTiles[1,2]);
+            // print(chunk.chunkTiles[1,2]);
             
         }
-        print(chunks[2,1].chunkTiles[1,2]);
+        // print(chunks[2,1].chunkTiles[1,2]);
 
         save.name = name;
         save.chunks = chunks;
@@ -86,13 +86,16 @@ public class LevelHandler : MonoBehaviour
             string saveRaw = File.ReadAllText(savePath);
 
             // Save world = JsonHelper.FromJson<Save>(saveRaw);
-            Save world = JsonUtility.FromJson<Save>(saveRaw);
+            // Save world = JsonUtility.FromJson<Save>(saveRaw);
+            world = JsonConvert.DeserializeObject<Save>(saveRaw);
         } else
         {
             // Save world = JsonHelper.FromJson<Save>(saveThing.text);
-            Save world = JsonUtility.FromJson<Save>(saveThing.text);
+            // Save world = JsonUtility.FromJson<Save>(saveThing.text);
+            world = JsonConvert.DeserializeObject<Save>(saveThing.text);
         }
 
+        print(JsonConvert.SerializeObject(world));
         if (world.chunks == null)
         {
             print("no chunks");
@@ -110,8 +113,8 @@ public class LevelHandler : MonoBehaviour
     public void SaveWorld()
     {
         //save world to SaveFile in SavePath
-        // string data = JsonHelper.ToJson<Chunk>(world.chunks);
-        string data = JsonUtility.ToJson(world);
+        string data = JsonConvert.SerializeObject(world, Formatting.Indented);
+        // string data = JsonUtility.ToJson(world);
         if (readFromAppdata)
         {
             savePath = Path.Combine(Application.persistentDataPath, saveFile);
@@ -119,7 +122,7 @@ public class LevelHandler : MonoBehaviour
             print("World Saved to " + savePath);
         } else
         {
-            File.WriteAllText(Path.Combine(Application.dataPath, saveThing.name), data);
+            File.WriteAllText(Path.Combine(Application.dataPath, saveThing.name + ".json"), data);
             print("World Saved to " + Path.Combine(Application.dataPath, saveThing.name + ".json"));
             print(world);
             print(data);
