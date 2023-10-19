@@ -96,7 +96,7 @@ public class LevelHandler : MonoBehaviour
         }
 
         print(JsonConvert.SerializeObject(world));
-        if (world.chunks == null)
+        if (world == null || world.chunks == null)
         {
             print("no chunks");
             world = CreateWorld(worldName, worldSize, chunkSize);

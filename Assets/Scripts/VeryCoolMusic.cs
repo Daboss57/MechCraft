@@ -10,7 +10,7 @@ public class VeryCoolMusic : MonoBehaviour
 
     
     public bool music = true;
-    public List<int> startingNumbers = new List<int>() {0, 1, 2};
+    public List<int> startingNumbers = new List<int>() {0, 8, 0, 0, 0, 1, 2};
     public AudioClip marimba;
     public GameObject audioSource;
     List<AudioSource> audioSources;
@@ -53,7 +53,7 @@ public class VeryCoolMusic : MonoBehaviour
         while(true) {
             yield return new WaitForSeconds(0.2f);
             
-            int sum = (numberz[0] + numberz[1] + numberz[2]) % 10;
+            int sum = (numberz[0] + numberz[5] + numberz[6]) % 10;
 
             numberz.Add(sum);
             numberz.RemoveAt(0);

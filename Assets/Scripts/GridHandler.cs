@@ -15,7 +15,6 @@ public class GridHandler : MonoBehaviour
     public Chunk[,] worldData = null;
 
 
-    [SerializeField]
     public GameObject tilemapObject = null;
     public GameObject levelHandlerObject = null;
     LevelHandler levelHandler = null;
@@ -23,6 +22,7 @@ public class GridHandler : MonoBehaviour
     Tilemap tilemap = null;
     public List<TileBase> tilebases = new List<TileBase>();
 
+    public bool causeLotsOfLag = false;
 
     // Start is called start because it starts
     void Start()
@@ -37,7 +37,12 @@ public class GridHandler : MonoBehaviour
         tilebases = CreateTiles();
 
         SetWorldData();
-        
+
+        if (causeLotsOfLag == true)
+        {
+            UpdateEveryChunkInTheWorldToSetTheCorrectStateForThePropertyOfBeingFilledBecauseNotEveryChunkHasAnAccurateValue();
+            FindConveyorLinesByScanningTheEntireWorldExceptForTheChunksThatAreSupposedlyEmpty();
+        }
         // print(chunkTiles[3]);
         // print(Math.Pow(4,3));
     }
@@ -183,9 +188,71 @@ public class GridHandler : MonoBehaviour
         // chunkTiles[localPos] = tileValue;
         
         worldData[chunkPos[0], chunkPos[1]].chunkTiles[localPos[0], localPos[1]] = tileValue;
+        if (tileValue != 0)
+        {
+            worldData[chunkPos[0], chunkPos[1]].filled = true;
+        } else 
+        {
+            worldData[chunkPos[0], chunkPos[1]].filled = false;
+        }
 
         tilemap.SetTile(new Vector3Int(x, y, 0), tilebases[tileValue]);
         print("updated");
+    }
+
+    void UpdateEveryChunkInTheWorldToSetTheCorrectStateForThePropertyOfBeingFilledBecauseNotEveryChunkHasAnAccurateValue()
+    {
+        for (int c = 0; c < worldData.Length; c++) {
+            Chunk chunk = worldData[c % worldSize, (int)(c / worldSize)];
+            print(new Vector2(c % worldSize, (int)(c / worldSize)));
+            for (int i = 0; i < chunk.chunkTiles.Length; i++)
+            {
+                print(new Vector2(i % chunkSize, (int)(i / chunkSize)));
+                if (chunk.chunkTiles[i % chunkSize, (int)(i / chunkSize)] != 0)
+                {
+                    chunk.filled = true;
+                    goto GetMeOutOfHereBeforeThePerformanceDies;
+                }
+            }
+
+            chunk.filled = false;
+            continue;
+
+            GetMeOutOfHereBeforeThePerformanceDies:;
+        }
+        print(worldData.Length);
+        print(worldData[1,1].chunkTiles.Length);
+
+    }
+
+    void FindConveyorLinesByScanningTheEntireWorldExceptForTheChunksThatAreSupposedlyEmpty()
+    {
+        print("a");
+        //              hey look, we're using c++   that means it's efficient
+        for (int c = 0; c < worldData.Length; c++) {
+            Chunk chunk = worldData[c % worldSize, (int)(c / worldSize)];
+            if (chunk.filled == true)
+            {
+                for (int i = 0; i < chunk.chunkTiles.Length; i++)
+                {
+                    Vector2Int tile = new Vector2Int(i % chunkSize, (int)(i / chunkSize));
+                    int tileValue = chunk.chunkTiles[tile[0], tile[1]];
+                    if (tileValue == 4)
+                    {
+                        print("miner " + tile);
+
+                    }
+                }
+            }
+
+        }
+    }
+
+    List<Vector2Int> SearchConveyorLine(Vector2Int source)
+    {
+        List<Vector2Int> result = new List<Vector2Int> ();
+        // insert code here
+        return result;
     }
 
 }
